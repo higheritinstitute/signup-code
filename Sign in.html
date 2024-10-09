@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In/Sign Up - Higher-IT Institute</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(255, 102, 102, 0.8), rgba(102, 204, 255, 0.8));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .form-container {
+            background: linear-gradient(135deg, rgba(148, 91, 91, 0.9), rgba(240, 240, 240, 0.9));
+            padding: 40px;
+            border-radius: 50px; /* Bubble shape */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-field {
+            width: calc(100% - 20px); /* Centered with padding */
+            padding: 12px;
+            margin: 10px auto; /* Center margins */
+            border: none;
+            border-radius: 25px; /* Rounded edges for input fields */
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border: 2px solid rgb(0, 123, 255);
+            box-shadow: 0 0 5px rgb(0, 123, 255), 0 2px 10px rgba(0, 123, 255, 0.5);
+        }
+        .btn {
+            width: calc(100% - 20px); /* Centered button */
+            padding: 12px;
+            background-color: rgb(0, 123, 255);
+            border: none;
+            border-radius: 25px; /* Rounded button */
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            background-color: rgb(0, 100, 204);
+            transform: scale(1.05);
+        }
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+            color: rgb(0, 123, 255);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .toggle-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgb(0, 123, 255);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <!-- Sign In Form -->
+    <div id="signin-form">
+        <h2>Sign In</h2>
+        <form onsubmit="return validateSignIn()">
+            <input type="email" id="signin-email" class="input-field" placeholder="Email" required>
+            <input type="password" id="signin-password" class="input-field" placeholder="Password" required>
+            <button type="submit" class="btn">Sign In</button>
+            <div class="forgot-password" onclick="showForgotPassword()">Forgot Password?</div>
+            <div id="signin-error" style="color: red; margin-top: 10px;"></div>
+        </form>
+        <div class="toggle-link" onclick="toggleForms()">Don't have an account? Sign Up</div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="hidden">
+        <h2>Sign Up</h2>
+        <form onsubmit="return validateSignUp()">
+            <input type="text" id="signup-firstname" class="input-field" placeholder="First Name" required>
+            <input type="text" id="signup-lastname" class="input-field" placeholder="Last Name" required>
+            <input type="tel" id="signup-whatsapp" class="input-field" placeholder="WhatsApp Number" required>
+            <input type="email" id="signup-email" class="input-field" placeholder="Email" required>
+            <input type="password" id="signup-password" class="input-field" placeholder="Password" required>
+            <input type="password" id="signup-confirm-password" class="input-field" placeholder="Confirm Password" required>
+            <button type="submit" class="btn">Sign Up</button>
+            <div id="signup-error" style="color: red; margin-top: 10px;"></div>
+            <div id="signup-success" class="success-message hidden"></div>
+        </form>
+        <div class="toggle-link" onclick="toggleForms()">Already have an account? Sign In</div>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <div id="forgot-password-form" class="hidden">
+        <h2>Reset Password</h2>
+        <form onsubmit="return resetPassword()">
+            <input type="password" id="previous-password" class="input-field" placeholder="Previous Password" required>
+            <input type="password" id="new-password" class="input-field" placeholder="New Password" required>
+            <input type="password" id="confirm-new-password" class="input-field" placeholder="Confirm New Password" required>
+            <button type="submit" class="btn">Reset Password</button>
+            <div id="reset-error" style="color: red; margin-top: 10px;"></div>
+        </form>
+        <div class="toggle-link" onclick="toggleToSignIn()">Back to Sign In</div>
+    </div>
+
+     <div class="footer">Made by MD. Mizanur Rahman</div>
+</div>
+
+<script>
+    function toggleForms() {
+        document.getElementById('signin-form').classList.toggle('hidden');
+        document.getElementById('signup-form').classList.toggle('hidden');
+        document.getElementById('signup-success').classList.add('hidden'); // Hide success message
+    }
+
+    function showForgotPassword() {
+        document.getElementById('signin-form').classList.add('hidden');
+        document.getElementById('forgot-password-form').classList.remove('hidden');
+    }
+
+    function toggleToSignIn() {
+        document.getElementById('forgot-password-form').classList.add('hidden');
+        document.getElementById('signin-form').classList.remove('hidden');
+    }
+
+    function resetPassword() {
+        const previousPassword = document.getElementById('previous-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+        if (newPassword !== confirmNewPassword) {
+            document.getElementById('reset-error').innerText = "New passwords do not match!";
+            return false;
+        }
+
+        alert('Password has been reset successfully!');
+        toggleToSignIn();
+        return false; // Prevent form submission for demo
+    }
+
+    function validateSignUp() {
+        const firstName = document.getElementById('signup-firstname').value;
+        const lastName = document.getElementById('signup-lastname').value;
+        const whatsapp = document.getElementById('signup-whatsapp').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            document.getElementById('signup-error').innerText = "Passwords do not match!";
+            return false;
+        }
+
+        const successMessage = document.getElementById('signup-success');
+        successMessage.innerText = 'Sign Up Successful!';
+        successMessage.classList.remove('hidden');
+
+        setTimeout(() => {
+            toggleForms(); // Switch to sign-in form after delay
+        }, 2000); // 2 seconds delay
+        return false; // Prevent form submission for demo
+    }
+
+    function validateSignIn() {
+        const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
+
+        // Add any additional validation logic here
+        alert('Sign In Successful!');
+        return false; // Prevent form submission for demo
+    }
+</script>
+
+</body>
+</html>
